@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'processing_employee_data.apps.ProcessingEmployeeDataConfig',
 ]
 
 MIDDLEWARE = [
