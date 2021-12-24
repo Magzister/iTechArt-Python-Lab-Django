@@ -1,8 +1,10 @@
 from django.contrib import admin
-from processing_employee_data.models import Employee
-from processing_employee_data.models import Company
-from processing_employee_data.models import Bank
-from processing_employee_data.models import PersonalData
+from processing_employee_data.models import (
+    Bank,
+    Company,
+    Employee,
+    PersonalData,
+)
 
 admin.site.register(Employee)
 admin.site.register(Company)

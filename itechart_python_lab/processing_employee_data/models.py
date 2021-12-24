@@ -23,6 +23,9 @@ class Bank(CreateUpdateInfo):
     web_site = models.CharField(max_length=50)
     email = models.EmailField()
 
+    class Meta:
+        db_table = 'bank'
+
     def __str__(self):
         return self.name
 
@@ -38,6 +41,9 @@ class Company(CreateUpdateInfo):
         related_name='company'
     )
 
+    class Meta:
+        db_table = 'company'
+
     def __str__(self):
         return self.name
 
@@ -46,6 +52,9 @@ class PersonalData(CreateUpdateInfo):
     date_of_birth = models.DateField()
     home_address = models.CharField(max_length=80)
     salary = models.PositiveIntegerField()
+
+    class Meta:
+        db_table = 'personal_data'
 
 
 class Employee(CreateUpdateInfo):
@@ -63,6 +72,9 @@ class Employee(CreateUpdateInfo):
         PersonalData,
         on_delete=models.CASCADE
     )
+
+    class Meta:
+        db_table = 'employee'
 
     def __str__(self):
         return self.surname + ' ' + self.name
