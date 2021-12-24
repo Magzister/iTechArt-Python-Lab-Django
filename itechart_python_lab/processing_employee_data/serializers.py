@@ -12,7 +12,7 @@ class BankSerializer(serializers.Serializer):
     web_site = serializers.CharField(max_length=50)
     email = serializers.EmailField()
     created_at = serializers.DateTimeField()
-    uodated_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
 
     def create(self, validated_data):
         return Bank.objects.create(**validated_data)
