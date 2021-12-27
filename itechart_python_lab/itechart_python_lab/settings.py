@@ -48,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'processing_employee_data.middleware.log_request_middleware.LogRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'itechart_python_lab.urls'
