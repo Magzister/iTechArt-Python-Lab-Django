@@ -70,7 +70,8 @@ class Employee(CreateUpdateInfo):
     )
     personal_data = models.OneToOneField(
         PersonalData,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='owner'
     )
 
     class Meta:

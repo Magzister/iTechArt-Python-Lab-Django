@@ -43,6 +43,6 @@ class LogRequestMiddleware:
         }
 
         if request.method in HttpMethods.METHODS_WITH_BODY:
-            log_data['request_body'] = json.loads(str(request.body, 'utf-8'))
+            log_data['request_body'] = request.body
 
         log.info(msg=log_data)

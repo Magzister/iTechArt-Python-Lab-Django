@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from processing_employee_data.permissions import is_admin, IsAdminOrReadOnly
 from processing_employee_data.models import (
     Bank,
     Company,
@@ -12,14 +13,15 @@ from processing_employee_data.serializers import (
     EmployeePersonalDataSerializer,
 )
 from rest_framework import status, generics
-from rest_framework.decorators import api_view
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 
 
 @api_view(['GET', 'POST'])
+@is_admin
 def bank_list(request):
     """Return list of all banks or create a new one."""
 
@@ -37,6 +39,7 @@ def bank_list(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@is_admin
 def bank_detail(request, pk):
     """Retrieve, update or delete a bank."""
 
@@ -64,6 +67,8 @@ def bank_detail(request, pk):
 class EmployeeList(APIView):
     """Return list of all employees or create a new one."""
 
+    permission_classes = [IsAdminOrReadOnly]
+
     def get(self, request):
         employees = Employee.objects.all()
         serializer = EmployeeSerializer(employees, many=True)
@@ -79,7 +84,7 @@ class EmployeeList(APIView):
 class EmployeeDetail(APIView):
     """Retrieve, update or delete a bank."""
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get_employee(self, pk):
         try:
@@ -107,9 +112,13 @@ class EmployeeDetail(APIView):
 
 
 class CompanyList(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
 
 class CompanyDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
