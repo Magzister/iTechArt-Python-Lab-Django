@@ -64,7 +64,7 @@ class Employee(CreateUpdateInfo):
     is_manager = models.BooleanField()
     is_admin = models.BooleanField()
     phone_number = models.CharField(max_length=25)
-    company = models.OneToOneField(
+    company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE
     )
