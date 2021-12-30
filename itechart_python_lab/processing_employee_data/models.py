@@ -35,10 +35,11 @@ class Company(CreateUpdateInfo):
     web_site = models.CharField(max_length=50)
     email = models.EmailField()
     post_index = models.CharField(max_length=20)
-    logo = models.ImageField(upload_to=company_directory_path)
+    logo = models.ImageField(upload_to=company_directory_path, null=True, blank=True)
     bank = models.ManyToManyField(
         Bank,
-        related_name='company'
+        related_name='company',
+        blank=True
     )
 
     class Meta:
@@ -66,7 +67,8 @@ class Employee(CreateUpdateInfo):
     phone_number = models.CharField(max_length=25)
     company = models.ForeignKey(
         Company,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='employees'
     )
     personal_data = models.OneToOneField(
         PersonalData,

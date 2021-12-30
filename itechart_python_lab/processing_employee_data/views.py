@@ -1,5 +1,5 @@
 from datetime import datetime
-from django.db.models import Q, F
+from django.db.models import Q, F, Max
 from django.shortcuts import render
 from processing_employee_data.permissions import is_admin, IsAdminOrReadOnly
 from processing_employee_data.models import (
@@ -114,9 +114,6 @@ class EmployeeList(APIView):
     def post(self, request):
         amount_str = request.POST.get('amount', '')
         birth_date_str = request.POST.get('birth_date', '')
-        print(request.POST)
-
-        print(amount_str, birth_date_str)
 
         amount = None
         birth_date = None
@@ -170,14 +167,41 @@ class EmployeeDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class CompanyList(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
+class CompanyList(APIView):
+    #permission_classes = [IsAuthenticated]
 
-    queryset = Company.objects.all()
-    serializer_class = CompanySerializer
+    def get(self, request):
+        companies = Company.objects.all()
+        serializer = CompanySerializer(companies, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        many = False
+        if isinstance(request.data, list):
+            many = True
+
+        serializer = CompanySerializer(data=request.data, many=many)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class CompanyDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
 
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
+
+
+class CompanyLastCreatedEmployee(APIView):
+
+    def get(self, requets):
+        employees = Employee.objects
+        print("-"*32)
+        print(employees.query)
+        print("-"*32)
+        serializer = EmployeeSerializer(employees, many=True)
+        if serializer.is_valid():
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

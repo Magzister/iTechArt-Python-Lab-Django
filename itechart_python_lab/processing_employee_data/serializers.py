@@ -12,16 +12,20 @@ class BankSerializer(serializers.ModelSerializer):
         model = Bank
         fields = '__all__'
 
-class CompanySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Company
-        fields = '__all__'
-
 
 class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
-        fields = ['name', 'surname', 'company']
+        fields = ['name', 'created_at']
+
+
+class CompanySerializer(serializers.ModelSerializer):
+    employees = EmployeeSerializer(many=True)
+    #last_created_employee = EmployeeSerializer()
+
+    class Meta:
+        model = Company
+        fields = ['name', 'web_site', 'email', 'post_index', 'employees']
 
 
 class PersonalDataSerializer(serializers.ModelSerializer):
