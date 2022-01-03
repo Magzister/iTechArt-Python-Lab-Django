@@ -104,7 +104,7 @@ class EmployeeList(APIView):
     received date by the received number
     """
 
-    #permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
 
     def get(self, request):
         employees = Employee.objects.all()
@@ -140,7 +140,7 @@ class EmployeeList(APIView):
 class EmployeeDetail(APIView):
     """Retrieve, update or delete a bank."""
 
-    #permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser]
 
     def get_employee(self, pk):
         try:
@@ -168,7 +168,7 @@ class EmployeeDetail(APIView):
 
 
 class CompanyList(APIView):
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         companies = Company.objects.all()
@@ -188,20 +188,27 @@ class CompanyList(APIView):
 
 
 class CompanyDetail(generics.RetrieveUpdateDestroyAPIView):
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
 
 
 class CompanyLastCreatedEmployee(APIView):
-
+    """
+    View that returns one last created employee for each company.
+    """
     def get(self, requets):
-        employees = Employee.objects
-        print("-"*32)
-        print(employees.query)
-        print("-"*32)
+        employees = Employee.objects.raw(
+            """
+            select *
+            from (
+                select *,
+                rank() over(partition by company_id order by created_at desc) as row_number
+                from employee
+            ) as employees
+            where employees.row_number = 1;
+            """
+        )
         serializer = EmployeeSerializer(employees, many=True)
-        if serializer.is_valid():
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=status.HTTP_200_OK)

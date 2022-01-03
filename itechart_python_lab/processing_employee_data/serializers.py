@@ -16,12 +16,11 @@ class BankSerializer(serializers.ModelSerializer):
 class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
-        fields = ['name', 'created_at']
+        fields = ['name', 'created_at', 'company_id']
 
 
 class CompanySerializer(serializers.ModelSerializer):
     employees = EmployeeSerializer(many=True)
-    #last_created_employee = EmployeeSerializer()
 
     class Meta:
         model = Company
