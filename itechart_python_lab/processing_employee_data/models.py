@@ -35,7 +35,11 @@ class Company(CreateUpdateInfo):
     web_site = models.CharField(max_length=50)
     email = models.EmailField()
     post_index = models.CharField(max_length=20)
-    logo = models.ImageField(upload_to=company_directory_path, null=True, blank=True)
+    logo = models.ImageField(
+        upload_to=company_directory_path,
+        null=True,
+        blank=True
+    )
     bank = models.ManyToManyField(
         Bank,
         related_name='company',
@@ -61,7 +65,7 @@ class PersonalData(CreateUpdateInfo):
 class Employee(CreateUpdateInfo):
     name = models.CharField(max_length=30)
     surname = models.CharField(max_length=30)
-    job_position =  models.CharField(max_length=30)
+    job_position = models.CharField(max_length=30)
     is_manager = models.BooleanField()
     is_admin = models.BooleanField()
     phone_number = models.CharField(max_length=25)
