@@ -1,6 +1,5 @@
 from datetime import datetime
-from django.db.models import Q, F, Max
-from django.shortcuts import render
+from django.db.models import F
 from processing_employee_data.permissions import is_admin, IsAdminOrReadOnly
 from processing_employee_data.models import (
     Bank,
@@ -15,7 +14,7 @@ from processing_employee_data.serializers import (
     EmployeePersonalDataSerializer,
 )
 from rest_framework import status, generics
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -124,7 +123,7 @@ class EmployeeList(APIView):
             print(e)
 
         if amount and birth_date:
-            birthday_people = PersonalData.objects.filter(
+            PersonalData.objects.filter(
                 date_of_birth=birth_date
             ).update(
                 salary=F('salary')+amount
@@ -136,6 +135,7 @@ class EmployeeList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class EmployeeDetail(APIView):
     """Retrieve, update or delete a bank."""
@@ -155,7 +155,10 @@ class EmployeeDetail(APIView):
 
     def put(self, request, pk):
         employee = self.get_employee(pk)
-        serializer = EmployeePersonalDataSerializer(employee, data=request.data)
+        serializer = EmployeePersonalDataSerializer(
+            employee,
+            data=request.data
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -204,7 +207,8 @@ class CompanyLastCreatedEmployee(APIView):
             select *
             from (
                 select *,
-                rank() over(partition by company_id order by created_at desc) as row_number
+                rank() over(partition by company_id order by created_at desc)
+                as row_number
                 from employee
             ) as employees
             where employees.row_number = 1;

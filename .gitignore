@@ -131,4 +131,3 @@ dmypy.json
 company_*
 migrations/
 tags
-settings.py

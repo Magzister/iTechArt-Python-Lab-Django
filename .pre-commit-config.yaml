@@ -1,3 +1,4 @@
+exclude: '/manage.py|/settings.py'
 repos:
 -   repo: https://github.com/pycqa/flake8
     rev: '4.0.1'
