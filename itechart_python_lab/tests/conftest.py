@@ -31,3 +31,16 @@ def get_or_create_token(db, create_user):
     user = create_user()
     token = RefreshToken.for_user(user)
     return token
+
+
+@pytest.fixture
+def api_client_with_credentials(db,
+                                create_user,
+                                api_client,
+                                get_or_create_token):
+    def make_api_client(**kwargs):
+        user = create_user(**kwargs)
+        token = get_or_create_token.access_token
+        api_client.force_authenticate(user=user, token=token)
+        return api_client
+    return make_api_client
