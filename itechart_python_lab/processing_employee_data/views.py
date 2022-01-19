@@ -1,6 +1,5 @@
 from datetime import datetime
-from django.db.models import Q, F, Max, OuterRef, Subquery
-from django.shortcuts import render
+from django.db.models import F, OuterRef, Subquery
 from processing_employee_data.permissions import is_admin, IsAdminOrReadOnly
 from processing_employee_data.models import (
     Bank,
