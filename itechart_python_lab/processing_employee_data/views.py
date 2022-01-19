@@ -1,5 +1,6 @@
 from datetime import datetime
-from django.db.models import F
+from django.db.models import Q, F, Max, OuterRef, Subquery
+from django.shortcuts import render
 from processing_employee_data.permissions import is_admin, IsAdminOrReadOnly
 from processing_employee_data.models import (
     Bank,
@@ -202,17 +203,11 @@ class CompanyLastCreatedEmployee(APIView):
     View that returns one last created employee for each company.
     """
     def get(self, requets):
-        employees = Employee.objects.raw(
-            """
-            select *
-            from (
-                select *,
-                rank() over(partition by company_id order by created_at desc)
-                as row_number
-                from employee
-            ) as employees
-            where employees.row_number = 1;
-            """
+        employees_last_created = Employee.objects.filter(
+            company_id=OuterRef('company_id')
+        ).order_by('-created_at')[:1]
+        employees = Employee.objects.filter(
+            pk__in=Subquery(employees_last_created.values('pk'))
         )
         serializer = EmployeeSerializer(employees, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
