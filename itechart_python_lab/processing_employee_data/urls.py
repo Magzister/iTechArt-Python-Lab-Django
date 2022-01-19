@@ -11,4 +11,5 @@ urlpatterns = [
     path('banks/<int:pk>', views.bank_detail, name='bank_detail'),
     path('companies', views.CompanyList.as_view(), name='company_list'),
     path('companies/<int:pk>', views.CompanyDetail.as_view(), name='company_detail'),
+    path('companies/lce', views.CompanyLastCreatedEmployee.as_view(), name='last_created_employee')
 ]

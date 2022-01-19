@@ -7,32 +7,24 @@ from processing_employee_data.models import (
 )
 
 
-class BankSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length=30)
-    web_site = serializers.CharField(max_length=50)
-    email = serializers.EmailField()
-
-    def create(self, validated_data):
-        return Bank.objects.create(**validated_data)
-
-    def upfate(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
-        instance.web_site = validated_data.get('web_site', instance.web_site)
-        instance.email = validated_data.get('email', instance.email)
-        instance.save()
-        return instance
-
-
-class CompanySerializer(serializers.ModelSerializer):
+class BankSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Company
+        model = Bank
         fields = '__all__'
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
-        fields = ['name', 'surname', 'company']
+        fields = ['name', 'created_at', 'company_id']
+
+
+class CompanySerializer(serializers.ModelSerializer):
+    employees = EmployeeSerializer(many=True)
+
+    class Meta:
+        model = Company
+        fields = ['name', 'web_site', 'email', 'post_index', 'employees']
 
 
 class PersonalDataSerializer(serializers.ModelSerializer):
