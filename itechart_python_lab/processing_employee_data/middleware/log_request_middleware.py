@@ -1,4 +1,3 @@
-import json
 import logging
 
 
@@ -25,7 +24,10 @@ class HttpMethods:
 
 
 class LogRequestMiddleware:
-    """This logger is used to write the request info to the request.log file."""
+    """
+    This logger is used to write the request info
+    to the request.log file.
+    """
 
     def __init__(self, get_response):
         self.get_response = get_response
